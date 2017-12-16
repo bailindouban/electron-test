@@ -34,61 +34,81 @@
 
     <script>if (window.module) module = window.module;</script>
 
+    <script>
+        $(document).ready(function () {
+            $("img").click(function () {
+                alert("haha");
+            })
+        });
+    </script>
+
 </head>
 
 <body>
 
-<div style="background: red;position: fixed;top: 0;bottom: 0;left: 0;right: 0;">
-    <div style="background: green;height: 100%;width: 10%;float: left"></div>
-    <div style="background: gray;height: 100%;width: 10%;float: left"></div>
-
-    <div style="background: beige;height: 100%;width: 40%;float: left">
-        <div style="width: 100%;padding-right: 20%;padding-left: 20%">
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-            <div style="width:50px;float: left">
-                <img src="res/com.ecarx.CarPlay.App.png" width="100%" style="display: block">
-                <div style="width: 100%;text-align: center">hahah</div>
-            </div>
-
-        </div>
-
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#icon" data-toggle="tab">图标</a></li>
+    <li><a href="#home" data-toggle="tab">主页</a></li>
+    <li><a href="#contect" data-toggle="tab">联系人</a></li>
+    <li><a href="#message" data-toggle="tab">短信</a></li>
+    <li><a href="#notification" data-toggle="tab">通知栏</a></li>
+    <li><a href="#application" data-toggle="tab">应用</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade in active" id="icon">
+        <p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
     </div>
-    <div style="background: blue;height: 100%;width: 20%;float: left"></div>
+    <div class="tab-pane fade" id="home">
+        <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+            TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
+    </div>
+    <div class="tab-pane fade" id="contect">
+        <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
+    </div>
+    <div class="tab-pane fade" id="message">
+        <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+        </p>
+    </div>
+    <div class="tab-pane fade" id="notification">
+        <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+        </p>
+    </div>
+    <div class="tab-pane fade" id="application" style="display: flex;">
+        <div style="background: rebeccapurple;width: 200px;">111</div>
+        <div style="background: red;width: 500px;">
+            <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;background-color: #2196F3;text-align: center;padding-left: 50px;padding-right: 50px;padding-top: 100px">
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+                <div style="text-align: center;background: rebeccapurple">
+                    <img src="res/com.ecarx.CarPlay.App.png"
+                         style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>拨号
+                </div>
+            </div>
+        </div>
+        <div style="background: blue;flex-grow: 1">333</div>
+    </div>
 </div>
 
 </body>

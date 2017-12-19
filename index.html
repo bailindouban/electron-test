@@ -35,7 +35,25 @@
     <script>if (window.module) module = window.module;</script>
 
     <script>
-        var ICON_LIST = [
+        const ICON_LIST = [
+            {link: "res/air.bf.task42.png", title: "任务"},
+            {link: "res/com.android.browser.png", title: "浏览器"},
+            {link: "res/com.android.calendar.png", title: "日历"},
+            {link: "res/com.android.email.png", title: "邮件"},
+            {link: "res/com.android.fileexplorer.png", title: "文件管理"},
+            {link: "res/com.autonavi.minimap.png", title: "高德地图"},
+            {link: "res/air.bf.task42.png", title: "任务"},
+            {link: "res/com.android.browser.png", title: "浏览器"},
+            {link: "res/com.android.calendar.png", title: "日历"},
+            {link: "res/com.android.email.png", title: "邮件"},
+            {link: "res/com.android.fileexplorer.png", title: "文件管理"},
+            {link: "res/com.autonavi.minimap.png", title: "高德地图"},
+            {link: "res/air.bf.task42.png", title: "任务"},
+            {link: "res/com.android.browser.png", title: "浏览器"},
+            {link: "res/com.android.calendar.png", title: "日历"},
+            {link: "res/com.android.email.png", title: "邮件"},
+            {link: "res/com.android.fileexplorer.png", title: "文件管理"},
+            {link: "res/com.autonavi.minimap.png", title: "高德地图"},
             {link: "res/air.bf.task42.png", title: "任务"},
             {link: "res/com.android.browser.png", title: "浏览器"},
             {link: "res/com.android.calendar.png", title: "日历"},
@@ -47,18 +65,27 @@
         $(document).ready(function () {
             for (var i = 0; i < ICON_LIST.length; i++) {
                 var icon = ICON_LIST[i];
-                var aDiv = $('<div style="text-align: center;background: red"></div>');
+                var aDiv = $('<div style="text-align: center;background: darkolivegreen;"></div>');
                 $("#iconList").append(aDiv);
                 var aImage = $('<img src="res/com.xiaomi.market.png" style="width: 50px;display: block;margin-left: auto;margin-right: auto"/>');
                 $(aImage).attr("src", icon.link);
-                $(aImage).data("link", icon.link);
-                $(aImage).data("title", icon.title);
+                $(aImage).data("icon", icon);
                 $(aDiv).text(icon.title);
                 $(aDiv).prepend(aImage);
             }
 
             $("img").click(function () {
-                $("#icon_preview").attr("src", $(this).data("link"));
+                $("#icon_preview").attr("src", $(this).data("icon")["link"]);
+            });
+
+            $("#file_selector").change(function () {
+                if (this.files && this.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        $('#icon_target').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(this.files[0]);
+                }
             });
         });
     </script>
@@ -78,14 +105,23 @@
 
 <div class="tab-content">
     <div class="tab-pane fade in active" id="icon" style="display: flex;">
-        <div style="background: rebeccapurple;width: 200px;">111</div>
+        <div style="width: 150px;">
+            <ul class="nav nav-pills nav-stacked">
+                <li class="active"><a href="#">系统图标</a></li>
+                <li><a href="#">其他图标</a></li>
+                <li><a href="#">图标滤镜</a></li>
+                <li><a href="#">桌面壁纸</a></li>
+            </ul>
+        </div>
         <div style="background: red;width: 500px;">
-            <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;background-color: #2196F3;text-align: center;padding-left: 50px;padding-right: 50px;padding-top: 100px"
+            <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;background-color: #2196F3;text-align: center;margin-left: 50px;margin-right: 50px;margin-top: 50px;height: 300px;overflow: auto"
                  id="iconList">
             </div>
         </div>
-        <div style="background: blue;flex-grow: 1">
-            <img id="icon_preview" src="res/com.xiaomi.market.png"/>
+        <div style="background: blue;flex-grow: 1;display: flex;align-items: center">
+            <img id="icon_preview" width="100px" src="res/com.xiaomi.market.png"/>
+            <img id="icon_target" width="100px" src="res/com.xiaomi.market.png"/>
+            <input id="file_selector" type="file" accept="image/*">
         </div>
     </div>
     <div class="tab-pane fade" id="home">

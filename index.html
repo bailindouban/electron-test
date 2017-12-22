@@ -77,7 +77,7 @@
         ];
 
         $(document).ready(function () {
-            for (var i = 0; i < ICON_LIST.length; i++) {
+            for (let i = 0; i < ICON_LIST.length; i++) {
                 var icon = ICON_LIST[i];
                 var aDiv = $('<div style="text-align: center;"></div>');
                 $("#iconList").append(aDiv);
@@ -92,13 +92,14 @@
                 $("#icon_preview").attr("src", $(this).data("icon")["link"]);
             });
 
-            const ipc = require('electron').ipcRenderer;
             $("#icon_target").click(function () {
-                ipc.send('open-file-dialog');
+                const {dialog} = require('electron').remote;
+                dialog.showOpenDialog({
+                    properties: ['openFile', 'openDirectory']
+                }, function (files) {
+                    $("#icon_target").attr("src", files);
+                })
             });
-            ipc.on('selected-directory', function (event, path) {
-                $("#icon_target").attr("src", path);
-            })
         });
     </script>
 

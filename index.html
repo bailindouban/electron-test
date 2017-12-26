@@ -117,6 +117,11 @@
 
             });
 
+            $("#icon_target_clear").click(function () {
+                iconTargetMap[iconTargetKey] = "res/ic_default.png";
+                $("#icon_target").attr("src", iconTargetMap[iconTargetKey]);
+            })
+
             $("#icon_apply").click(function () {
                 const {dialog} = require('electron').remote;
                 dialog.showOpenDialog({
@@ -163,6 +168,7 @@
                     <img id="icon_preview" width="100px" src="res/ic_default.png"/>
                     <img src="res/right+arrow5.png" width="50px"/>
                     <img id="icon_target" width="100px" src="res/ic_default.png"/>
+                    <p id="icon_target_clear">Clear</p>
                     <p id="icon_preview_title"></p>
                 </div>
                 <div style="flex-grow: 1; display: flex; align-items: center">

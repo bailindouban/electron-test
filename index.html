@@ -3,12 +3,11 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Bootstrap 实例 - 标签式的导航菜单</title>
+    <title>XUI Theme Editor</title>
     <script>if (typeof module === 'object') {
         window.module = module;
         module = undefined;
     }</script>
-
 
     <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
     <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
@@ -29,7 +28,7 @@
 
     <!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
     <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
-            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+            integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l3mCWNIpG9mGCD8wGNIcPD7Txa"
             crossorigin="anonymous"></script>
 
     <script>if (window.module) module = window.module;</script>
@@ -81,7 +80,7 @@
                 var icon = ICON_LIST[i];
                 var aDiv = $('<div style="text-align: center;"></div>');
                 $("#iconList").append(aDiv);
-                var aImage = $('<img src="res/com.xiaomi.market.png" class="icon_item" />');
+                var aImage = $('<img src="res/ic_default.png" class="icon_item" />');
                 $(aImage).attr("src", icon.link);
                 $(aImage).data("icon", icon);
                 $(aDiv).text(icon.title);
@@ -94,12 +93,25 @@
 
             $("#icon_target").click(function () {
                 const {dialog} = require('electron').remote;
+                console.log(
+                    dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters:[{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
+                    }, function (files) {
+                        $("#icon_target").attr("src", files);
+                    })
+                );
+            });
+
+            $("#icon_apply").click(function () {
+                const {dialog} = require('electron').remote;
                 dialog.showOpenDialog({
                     properties: ['openFile', 'openDirectory']
                 }, function (files) {
                     $("#icon_target").attr("src", files);
                 })
             });
+
         });
     </script>
 
@@ -134,10 +146,14 @@
                     </div>
                 </div>
                 <div style="flex-grow: 1;display: flex;align-items: center">
-                    <img id="icon_preview" width="100px" src="res/com.xiaomi.market.png"/>
+                    <img id="icon_preview" width="100px" src="res/ic_default.png"/>
                     <img src="res/right+arrow5.png" width="50px"/>
-                    <img id="icon_target" width="100px" src="res/com.xiaomi.market.png"/>
+                    <img id="icon_target" width="100px" src="res/ic_default.png"/>
                 </div>
+                <div style="flex-grow: 1; display: flex; align-items: center">
+                    <img id="icon_apply" width="100px" src="res/ic_apply.jpg"/>
+                </div>
+
             </div>
 
             <div class="tab-pane fade" id="other_icon">

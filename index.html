@@ -75,6 +75,10 @@
             {link: "res/com.autonavi.minimap.png", title: "高德地图"}
         ];
 
+        var iconTargetMap = {};
+        var iconTargetKey;
+        var iconTargetValue;
+
         $(document).ready(function () {
             for (let i = 0; i < ICON_LIST.length; i++) {
                 var icon = ICON_LIST[i];
@@ -89,6 +93,14 @@
 
             $(".icon_item").click(function () {
                 $("#icon_preview").attr("src", $(this).data("icon")["link"]);
+                $("#icon_preview_title").text($(this).data("icon")["title"]);
+
+                iconTargetKey = $(this).data("icon")["link"];
+                iconTargetValue = iconTargetMap[iconTargetKey];
+                if(typeof(iconTargetValue) == "undefined") {
+                    iconTargetValue = "res/ic_default.png";
+                }
+                $("#icon_target").attr("src", iconTargetValue);
             });
 
             $("#icon_target").click(function () {
@@ -99,8 +111,10 @@
                         filters:[{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
                     }, function (files) {
                         $("#icon_target").attr("src", files);
+                        iconTargetMap[iconTargetKey] = files;
                     })
                 );
+
             });
 
             $("#icon_apply").click(function () {
@@ -149,6 +163,7 @@
                     <img id="icon_preview" width="100px" src="res/ic_default.png"/>
                     <img src="res/right+arrow5.png" width="50px"/>
                     <img id="icon_target" width="100px" src="res/ic_default.png"/>
+                    <p id="icon_preview_title"></p>
                 </div>
                 <div style="flex-grow: 1; display: flex; align-items: center">
                     <img id="icon_apply" width="100px" src="res/ic_apply.jpg"/>

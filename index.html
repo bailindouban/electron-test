@@ -75,9 +75,11 @@
             {link: "res/com.autonavi.minimap.png", title: "高德地图"}
         ];
 
-        var iconTargetMap = {};
-        var iconTargetKey;
-        var iconTargetValue;
+        let iconTargetMap = {};
+        let iconTargetKey;
+        let iconTargetValue;
+
+        const defaultIcon = "res/ic_default.png";
 
         $(document).ready(function () {
             $.each(ICON_LIST, function(index, value) {
@@ -97,7 +99,7 @@
                 iconTargetKey = $(this).data("icon")["link"];
                 iconTargetValue = iconTargetMap[iconTargetKey];
                 if(typeof(iconTargetValue) == "undefined") {
-                    iconTargetValue = "res/ic_default.png";
+                    iconTargetValue = defaultIcon;
                 }
                 $("#icon_target").attr("src", iconTargetValue);
             });
@@ -117,8 +119,8 @@
             });
 
             $("#icon_target_clear").click(function () {
-                iconTargetMap[iconTargetKey] = "res/ic_default.png";
-                $("#icon_target").attr("src", iconTargetMap[iconTargetKey]);
+                delete iconTargetMap[iconTargetKey];
+                $("#icon_target").attr("src", defaultIcon);
             });
 
             $("#icon_apply").click(function () {
@@ -134,8 +136,8 @@
 
                     let hasIcon = false;
                     $.each(iconTargetMap, function(key, value) {
-                        var arr = key.split("/");
-                        zipIcon.file("res/drawable/" + arr[1], fs.readFileSync(value + ""));
+                        let arr = key.split("/");
+                        zipIcon.file("res/drawable-xhdpi/" + arr[1], fs.readFileSync(value + ""));
                         hasIcon = true;
                     });
 
@@ -148,15 +150,16 @@
                     zipSkin.folder("wallpaper");
 
                     if(hasIcon) {
+                        let iconsPath = "icons";
                         zipIcon
                             .generateNodeStream({type:'nodebuffer',streamFiles:true})
-                            .pipe(fs.createWriteStream("icons"))
+                            .pipe(fs.createWriteStream(iconsPath))
                             .on('finish', function () {
                                 // JSZip generates a readable stream with a "end" event,
                                 // but is piped here in a writable stream which emits a "finish" event.
                                 console.log("icons written.");
 
-                                zipSkin.file("icons", fs.readFileSync("icons"));
+                                zipSkin.file("icons", fs.readFileSync(iconsPath));
 
                                 zipSkin
                                     .generateNodeStream({type:'nodebuffer',streamFiles:true})
@@ -165,6 +168,9 @@
                                         // JSZip generates a readable stream with a "end" event,
                                         // but is piped here in a writable stream which emits a "finish" event.
                                         console.log("mySkin.zip written.");
+
+                                        // 删除临时icon
+                                        fs.unlinkSync(iconsPath);
                                     });
                             });
                     } else {
@@ -200,9 +206,9 @@
     <div class="tab-pane fade in active" id="icon">
         <ul class="nav nav-pills">
             <li class="active"><a href="#system_icon" data-toggle="tab">图标</a></li>
-            <li><a href="#other_icon" data-toggle="tab">壁纸</a></li>
-            <li><a href="#icon_filter" data-toggle="tab">预览图</a></li>
-            <li><a href="#wallpaper" data-toggle="tab">描述文件</a></li>
+            <li><a href="#wallpaper" data-toggle="tab">壁纸</a></li>
+            <li><a href="#preview" data-toggle="tab">预览图</a></li>
+            <li><a href="#description" data-toggle="tab">描述文件</a></li>
         </ul>
 
         <div class="tab-content">
@@ -226,15 +232,15 @@
 
             </div>
 
-            <div class="tab-pane fade" id="other_icon">
-                其他图标
-            </div>
-
-            <div class="tab-pane fade" id="icon_filter">
-                其他图标
-            </div>
-
             <div class="tab-pane fade" id="wallpaper">
+                其他图标
+            </div>
+
+            <div class="tab-pane fade" id="preview">
+                其他图标
+            </div>
+
+            <div class="tab-pane fade" id="description">
                 其他图标
             </div>
 

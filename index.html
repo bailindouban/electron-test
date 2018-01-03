@@ -22,6 +22,7 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"
             integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh"
             crossorigin="anonymous"></script>
@@ -79,13 +80,16 @@
         let iconTargetKey;
         let iconTargetValue;
 
+        let wallpaperMap = {};
+        let previewMap = {};
+
         const defaultIcon = "res/ic_default.png";
 
         $(document).ready(function () {
             $.each(ICON_LIST, function(index, value) {
-                var aDiv = $('<div style="text-align: center;"></div>');
+                let aDiv = $('<div style="text-align: center;"></div>');
                 $("#iconList").append(aDiv);
-                var aImage = $('<img src="res/ic_default.png" class="icon_item" />');
+                let aImage = $('<img src="res/ic_default.png" class="icon_item" />');
                 $(aImage).attr("src", value.link);
                 $(aImage).data("icon", value);
                 $(aDiv).text(value.title);
@@ -104,6 +108,7 @@
                 $("#icon_target").attr("src", iconTargetValue);
             });
 
+            // 替换icon
             $("#icon_target").click(function () {
                 const {dialog} = require('electron').remote;
                 console.log(
@@ -115,14 +120,15 @@
                         iconTargetMap[iconTargetKey] = files;
                     })
                 );
-
             });
 
+            // 清空icon
             $("#icon_target_clear").click(function () {
                 delete iconTargetMap[iconTargetKey];
                 $("#icon_target").attr("src", defaultIcon);
             });
 
+            // 导出xtz包
             $("#icon_apply").click(function () {
                 const {dialog} = require('electron').remote;
                 dialog.showSaveDialog({
@@ -145,10 +151,20 @@
                     let zipSkin = new JSZip();
 
                     // create a file and a folder
-                    zipSkin.file("description.xml", "Author: Bailin\nDate: 2018-1-1");
-                    zipSkin.folder("preview").file("1.png", fs.readFileSync("res/com.xiaomi.gamecenter.png"));
-                    zipSkin.folder("wallpaper");
+                    // 创建壁纸
+                    $.each(wallpaperMap, function(key, value) {
+                        zipSkin.folder("wallpaper").file(key, fs.readFileSync(value + ""));
+                    });
 
+                    // 创建预览图
+                    $.each(previewMap, function(key, value) {
+                        zipSkin.folder("preview").file(key, fs.readFileSync(value + ""));
+                    });
+
+                    // 创建描述文件
+                    zipSkin.file("description.xml", "Author: Bailin\nDate: 2018-1-1");
+
+                    // 创建icon图标压缩文件
                     if(hasIcon) {
                         let iconsPath = "icons";
                         zipIcon
@@ -161,6 +177,7 @@
 
                                 zipSkin.file("icons", fs.readFileSync(iconsPath));
 
+                                // 创建最终皮肤包文件
                                 zipSkin
                                     .generateNodeStream({type:'nodebuffer',streamFiles:true})
                                     .pipe(fs.createWriteStream(files))
@@ -174,6 +191,7 @@
                                     });
                             });
                     } else {
+                        // 创建最终皮肤包文件
                         zipSkin
                             .generateNodeStream({type:'nodebuffer',streamFiles:true})
                             .pipe(fs.createWriteStream(files))
@@ -184,6 +202,53 @@
                             });
                     }
                 })
+            });
+
+            // 替换壁纸
+            $("#wallpaper1").click(function () {
+                const {dialog} = require('electron').remote;
+                console.log(
+                    dialog.showOpenDialog({
+                        properties: ['openFile'],
+                        filters:[{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
+                    }, function (files) {
+                        $("#wallpaper1").attr("src", files);
+                        wallpaperMap["default_wallpaper.jpg"] = files;
+                        $("#wallpaper1_file_path").text(files);
+                    })
+                );
+            });
+
+            // 清空壁纸
+            $("#wallpaper1_clear").click(function () {
+                delete wallpaperMap["default_wallpaper.jpg"];
+                $("#wallpaper1").attr("src", defaultIcon);
+                $("#wallpaper1_file_path").text("");
+            });
+
+            const PREVIEW_LIST = ["preview1", "preview2", "preview3"];
+            $.each(PREVIEW_LIST, function(index, value) {
+                // 替换预览图
+                $("#" + value).click(function () {
+                    const {dialog} = require('electron').remote;
+                    console.log(
+                        dialog.showOpenDialog({
+                            properties: ['openFile'],
+                            filters:[{ name: 'Images', extensions: ['jpg', 'png', 'gif'] }]
+                        }, function (files) {
+                            $("#" + value).attr("src", files);
+                            $("#" + value + "_file_path").text(files);
+                            previewMap[value + ".jpg"] = files;
+                        })
+                    );
+                });
+
+                // 清空预览图
+                $("#" + value + "_clear").click(function () {
+                    delete previewMap[value + ".jpg"];
+                    $("#" + value).attr("src", defaultIcon);
+                    $("#" + value + "_file_path").text("");
+                });
             });
 
         });
@@ -212,64 +277,89 @@
         </ul>
 
         <div class="tab-content">
-
-            <div class="tab-pane fade in active" id="system_icon" style="display: flex">
-                <div style="width: 500px;">
-                    <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;text-align: center;margin-left: 50px;margin-right: 50px;margin-top: 20px;overflow: auto;height: 400px;"
-                         id="iconList">
+            <!--icon图标-->
+            <div class="tab-pane fade in active" id="system_icon">
+                <div style="display: flex">
+                    <div style="width: 500px;">
+                        <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;text-align: center;margin-left: 50px;margin-right: 50px;margin-top: 20px;overflow: auto;height: 400px;"
+                             id="iconList">
+                        </div>
+                    </div>
+                    <div style="flex-grow: 1;display: flex;align-items: center">
+                        <img id="icon_preview" width="100px" src="res/ic_default.png"/>
+                        <img src="res/right+arrow5.png" width="50px"/>
+                        <img id="icon_target" width="100px" src="res/ic_default.png"/>
+                        <img id="icon_target_clear" width="50px" src="res/clear.jpg" />
+                        <p id="icon_preview_title"></p>
+                    </div>
+                    <div style="flex-grow: 1; display: flex; align-items: center">
+                        <img id="icon_apply" width="100px" src="res/ic_apply.jpg"/>
                     </div>
                 </div>
-                <div style="flex-grow: 1;display: flex;align-items: center">
-                    <img id="icon_preview" width="100px" src="res/ic_default.png"/>
-                    <img src="res/right+arrow5.png" width="50px"/>
-                    <img id="icon_target" width="100px" src="res/ic_default.png"/>
-                    <p id="icon_target_clear">Clear</p>
-                    <p id="icon_preview_title"></p>
-                </div>
-                <div style="flex-grow: 1; display: flex; align-items: center">
-                    <img id="icon_apply" width="100px" src="res/ic_apply.jpg"/>
-                </div>
-
             </div>
 
-            <div class="tab-pane fade" id="wallpaper">
-                其他图标
+            <!--壁纸-->
+            <div class="tab-pane fade" id="wallpaper" style="text-align: center;">
+                <img id="wallpaper1" src="res/ic_default.png" width="200px" title="点击这里增加默认壁纸"/>
+                <img id="wallpaper1_clear" width="50px" src="res/clear.jpg" />
+                <p>（默认壁纸）</p>
+                <p id="wallpaper1_file_path"></p>
+
+
+                <p style="color: red;">请上传jpg格式图片，否则打出来xtz包图片打不开！</p>
             </div>
 
-            <div class="tab-pane fade" id="preview">
-                其他图标
+            <!--预览图-->
+            <div class="tab-pane fade" id="preview" style="text-align: center;">
+                <img id="preview1" src="res/ic_default.png" width="200px" title="点击这里增加预览图1"/>
+                <img id="preview1_clear" width="50px" src="res/clear.jpg" />
+                <p>(预览图1)</p>
+                <p id="preview1_file_path"></p>
+
+                <img id="preview2" src="res/ic_default.png" width="200px" title="点击这里增加预览图2"/>
+                <img id="preview2_clear" width="50px" src="res/clear.jpg" />
+                <p>(预览图2)</p>
+                <p id="preview2_file_path"></p>
+
+                <img id="preview3" src="res/ic_default.png" width="200px" title="点击这里增加预览图3"/>
+                <img id="preview3_clear" width="50px" src="res/clear.jpg" />
+                <p>(预览图3)</p>
+                <p id="preview3_file_path"></p>
+
+
+                <p style="color: red;">请上传jpg格式图片，否则打出来xtz包图片打不开！</p>
             </div>
 
-            <div class="tab-pane fade" id="description">
+            <!--描述文件-->
+            <div class="tab-pane fade" id="description" style="text-align: center">
                 其他图标
             </div>
 
         </div>
-
     </div>
 
-    <div class="tab-pane fade" id="home">
-        <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
-            TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>
-    </div>
+    <!--<div class="tab-pane fade" id="home">-->
+        <!--<p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple-->
+            <!--TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。</p>-->
+    <!--</div>-->
 
-    <div class="tab-pane fade" id="contect">
-        <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>
-    </div>
+    <!--<div class="tab-pane fade" id="contect">-->
+        <!--<p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。</p>-->
+    <!--</div>-->
 
-    <div class="tab-pane fade" id="message">
-        <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
-        </p>
-    </div>
+    <!--<div class="tab-pane fade" id="message">-->
+        <!--<p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。-->
+        <!--</p>-->
+    <!--</div>-->
 
-    <div class="tab-pane fade" id="notification">
-        <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
-        </p>
-    </div>
+    <!--<div class="tab-pane fade" id="notification">-->
+        <!--<p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。-->
+        <!--</p>-->
+    <!--</div>-->
 
-    <div class="tab-pane fade" id="application">
-        <p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>
-    </div>
+    <!--<div class="tab-pane fade" id="application">-->
+        <!--<p>菜鸟教程是一个提供最新的web技术站点，本站免费提供了建站相关的技术文档，帮助广大web技术爱好者快速入门并建立自己的网站。菜鸟先飞早入行——学的不仅是技术，更是梦想。</p>-->
+    <!--</div>-->
 </div>
 
 </body>

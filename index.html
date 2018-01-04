@@ -162,7 +162,20 @@
                     });
 
                     // 创建描述文件
-                    zipSkin.file("description.xml", "Author: Bailin\nDate: 2018-1-1");
+                    let builder = require('xmlbuilder');
+                    let obj = {
+                        title: $('#title').val(),
+                        providerName: $('#providerName').val(),
+                        introduce: $('#introduce').val(),
+                        price: $('#price').val(),
+                        version: $('#version').val(),
+                        uiVersion: $('#uiVersion').val()
+                    };
+                    let xml = builder.create('XUI-Theme', {version: '1.0', encoding: 'UTF-8'})
+                        .ele(obj)
+                        .end({pretty: true});
+
+                    zipSkin.file("description.xml", xml);
 
                     // 创建icon图标压缩文件
                     if(hasIcon) {
@@ -270,15 +283,15 @@
 <div class="tab-content">
     <div class="tab-pane fade in active" id="icon">
         <ul class="nav nav-pills">
-            <li class="active"><a href="#system_icon" data-toggle="tab">图标</a></li>
+            <li><a href="#system_icon" data-toggle="tab">图标</a></li>
             <li><a href="#wallpaper" data-toggle="tab">壁纸</a></li>
             <li><a href="#preview" data-toggle="tab">预览图</a></li>
-            <li><a href="#description" data-toggle="tab">描述文件</a></li>
+            <li class="active"><a href="#description" data-toggle="tab">描述文件</a></li>
         </ul>
 
         <div class="tab-content">
             <!--icon图标-->
-            <div class="tab-pane fade in active" id="system_icon">
+            <div class="tab-pane fade" id="system_icon">
                 <div style="display: flex">
                     <div style="width: 500px;">
                         <div style="display: grid;grid-template-columns: auto auto auto auto;grid-gap:10px;text-align: center;margin-left: 50px;margin-right: 50px;margin-top: 20px;overflow: auto;height: 400px;"
@@ -305,7 +318,6 @@
                 <p>（默认壁纸）</p>
                 <p id="wallpaper1_file_path"></p>
 
-
                 <p style="color: red;">请上传jpg格式图片，否则打出来xtz包图片打不开！</p>
             </div>
 
@@ -326,13 +338,22 @@
                 <p>(预览图3)</p>
                 <p id="preview3_file_path"></p>
 
-
                 <p style="color: red;">请上传jpg格式图片，否则打出来xtz包图片打不开！</p>
             </div>
 
             <!--描述文件-->
-            <div class="tab-pane fade" id="description" style="text-align: center">
-                其他图标
+            <div class="tab-pane fade in active" id="description" style="text-align: center">
+                <br><br>
+                <form style="text-align: left; margin-left: 50px">
+
+                    <p>title: <input type="text" id="title" name="title" style="margin-left: 66px"></p>
+                    <p>providerName: <input type="text" id="providerName" name="providerName"></p>
+                    <p>introduce: <input type="text" id="introduce" name="introduce" style="margin-left: 31px"></p>
+                    <p>price: <input type="text" id="price" name="price" style="margin-left: 58px"></p>
+                    <p>version: <input type="text" id="version" name="version" style="margin-left: 44px"></p>
+                    <p>uiVersion: <input type="text" id="uiVersion" name="uiVersion" style="margin-left: 32px"></p>
+
+                </form>
             </div>
 
         </div>
